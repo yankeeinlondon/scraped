@@ -79,13 +79,42 @@ export interface RefinedQuerySome {
 
 export type QuerySelector = QueryAll | QueryFirst | RefinedQueryFirst | RefinedQueryAll | QuerySome | RefinedQuerySome;
 
-export interface ScrapeOptions<TName extends string | undefined = undefined> {
-  /** The configuration template this scrape was derived from */
+/** converts a dictionary of Query Selectors into a signature for a secondary query */
+export type SecondaryQuery<
+  T extends Record<string, QuerySelector>
+> = (<V>(q: FromSelectors<T>) => V);
+
+/**
+ * Defines the basic dictionary structure of the secondary queries configuration. 
+ */
+export type SecondaryQueries<T extends Record<string, QuerySelector>> = Record<string, SecondaryQuery<T>>;
+
+export interface ScrapeOptions<
+  TName extends string | undefined = undefined, 
+  TSecondary extends SecondaryQueries<Record<string, QuerySelector>> | undefined = undefined
+> {
+  /** 
+   * The configuration template this scrape was derived from.
+   * 
+   * Note: _this will be filled in automatically by `Page`'s scrape()
+   * method.
+   **/
   from?: TName;
+  /**
+   * Secondary queries which are built off inputs from the primary query results
+   */
+  secondary?: TSecondary;
 }
 
-export interface PageOptions<U extends Url = never> {
-  defaultUrl?: U;
+export interface PageOptions<
+  TUrl extends Url = never,
+  TSecondary extends SecondaryQueries<Record<string, QuerySelector>> | undefined = undefined
+> {
+  defaultUrl?: TUrl;
+  /**
+   * Secondary queries which are built off inputs from the primary query results
+   */
+  secondary?: TSecondary;
 }
 
 export type ScrapedNameAndUrl<N extends string | undefined, U extends Url = "https://unknown"> = {

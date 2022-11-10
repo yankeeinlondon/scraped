@@ -102,20 +102,14 @@ const result = await scrape("https://example.com", {
 
 Now we have the **hrefs** of links on the page which contain the class "foobar" but not the others.
 
-### Secondary Queries
+### The `select()` Helper
 
-When a page is scraped and all selectors are turned into values you are given another opportunity to refine your results with _secondary queries_. A secondary query is simply a callback function which receives all the values of the primary values to work with.
+This library internally leverages the `@yankeeinlondon/happy-wrapper` repo which provides useful utilities for working with Happy DOM. One of the really nice utilities that it implements -- and this library proxies out to its users -- is the `select()` utility.
 
-To illustrate this let's use the case where we expect a unique **id** of `modules` to exist as a heading on the page but rather than the content we're interested in being _nested_ inside this element it is actually the next sibling element which contains the actual module definitions:
+The `select(el)` utility consumes an element and then provides a useful API surface which includes:
 
-```ts
-import { page, select } from "scraped";
+- `findAll(sel): IElement[]`
+- `findFirst(sel): IElement | null`
+- `mapAll(sel)<O>(el: IElement => O)`
 
-const crateModules = page("crate", {
-    modules: { first: "#modules", refine: el => el.nextElementSibling },
-}, {
-    secondary: {
-        moduleList: ()
-    }
-})
-```
+The entire API surface is typed and has useful doc comments to help guide you in its use.
