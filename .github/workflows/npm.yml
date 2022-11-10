@@ -72,7 +72,7 @@ jobs:
       - name: Publish to NPM
         run: npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token || github.event.inputs.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN || secrets.npm_token || github.event.inputs.npm_token}}
       - name: Create Changelog Entry
         run: npx changelogithub
         env:
