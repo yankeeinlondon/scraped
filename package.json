@@ -15,7 +15,7 @@
   },
   "scripts": {
     "audit:fix": "pnpm audit --fix",
-    "build": "tsup src/index.ts --format=esm,cjs --clean",
+    "build": "tsup src/index.ts --format=esm,cjs --clean --dts",
     "test": "vitest",
     "test:ci": "vitest run",
     "release": "bumpp",
