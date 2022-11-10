@@ -1,41 +1,8 @@
 /* eslint-disable no-use-before-define */
 import {  IElement } from "@yankeeinlondon/happy-wrapper";
-import { ExpandRecursively, IsStringLiteral, SimplifyObject } from "inferred-types";
+import { IsStringLiteral, SimplifyObject } from "inferred-types";
 
 export type Url = `http${string}`;
-
-/**
- * Allow a dictionary have it's value's type changed to `T` while maintaining the keys in
- * the original object `I` so long as the original value for the KV pair extends `V`.
- *
- * If `V` is not specified then it defaults to _any_ and therefore all KVs are preserved.
- *
- * ```ts
- * type Obj = { foo: "hello", bar: 42, baz: () => "world" };
- * // { foo: number, bar: number, baz: number };
- * type AllNumbers = DictChangeValue<Obj, number>;
- * // { foo: number }
- * type StringToBool = DictChangeValue<Obj, boolean, string>
- * ```
- */
- export type DictChangeValue<
- /** the object who's value-type we're changing */
- I extends Record<string, any>,
- /** the return type that functions should be modified to have */
- T extends any,
- /**
-  *The type we expect in the value; if the value extends type `V` then the value will
-  * be converted to type `O`; if not then the KV pair will be discarded
-  */
- V extends any = any
-> = SimplifyObject<
- {
-   [K in keyof I]: I[K] extends V
-     ? // it's a function (or at least the scoped down type of function we're looking for)
-       Record<K, T>
-     : never;
- }[keyof I]
->;
 
 export interface QueryAll {
  all: string;
@@ -176,22 +143,3 @@ export interface Page<
   defaultUrl: IsStringLiteral<TDefaultUrl> extends true ? TDefaultUrl : never;
 };
 
-
-
-
-/**
- * Utility type which converts a `QuerySelector` to the results of this
- * selector after loading the page and querying.
- */
- export type QueryResults<S extends Record<string, QuerySelector>> =
- ExpandRecursively<
-   DictChangeValue<S, IElement[], QueryAll> &
-     DictChangeValue<S, IElement | null, QueryFirst>
- >;
-
-/**
-* A scrape target is a KV dictionary where the keys are
-* the named targets and the values are the DOM querystring
-* which we want to use to look for an item.
-*/
-export type ScrapeTargets = Record<string, QuerySelector>;
