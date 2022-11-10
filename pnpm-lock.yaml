@@ -6,7 +6,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.42.1
   '@typescript-eslint/parser': ^5.42.1
   '@vitest/ui': ^0.25.1
-  '@yankeeinlondon/happy-wrapper': ^2.7.2
+  '@yankeeinlondon/happy-wrapper': ^2.7.3
   bumpp: ^8.2.1
   eslint: ^8.27.0
   eslint-config-prettier: ^8.5.0
@@ -26,7 +26,7 @@ specifiers:
   vitest: ^0.25.1
 
 dependencies:
-  '@yankeeinlondon/happy-wrapper': 2.7.2_@vitest+ui@0.25.1
+  '@yankeeinlondon/happy-wrapper': 2.7.3_@vitest+ui@0.25.1
   happy-dom: 7.6.7
   inferred-types: 0.31.0_c6i55f4zfxzk73yp32iagqsyta
   node-fetch: 3.2.10
@@ -346,8 +346,8 @@ packages:
     dependencies:
       sirv: 2.0.2
 
-  /@yankeeinlondon/happy-wrapper/2.7.2_@vitest+ui@0.25.1:
-    resolution: {integrity: sha512-IPk3hArZKq5toqD+8Lrr6dW2aYbjunTztiGKHWuaRO45ERD6kMvfxUdItjCI3CMlpxwLhrIRnRqcFXOv3D1cBQ==}
+  /@yankeeinlondon/happy-wrapper/2.7.3_@vitest+ui@0.25.1:
+    resolution: {integrity: sha512-sCGs9L8OyCW1jwzz+eD86itsO4eKg7LajlWmQqarYtQn/G4wnq4qZmdYsvii84jCkTGiDNZCJeDYsCOt40bbQA==}
     dependencies:
       fp-ts: 2.13.1
       happy-dom: 7.6.7

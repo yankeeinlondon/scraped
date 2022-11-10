@@ -1,12 +1,12 @@
 import fetch from "node-fetch";
-import { createDocument, Document } from "@yankeeinlondon/happy-wrapper";
+import { createDocument, HappyDoc } from "@yankeeinlondon/happy-wrapper";
 import { Url } from "./types";
 
 /**
  * Loads a page into the `@yankeeinlondon/happy-wrapper` (aka, the
  * **Happy DOM** API with some nice utilities wrapping it)
  */
-export async function loadPage(url: Url): Promise<Document> {
+export async function loadPage(url: Url): Promise<HappyDoc> {
   const res = await fetch(url);
   if (res.ok) {
     const html = createDocument(await res.text());
