@@ -57,7 +57,6 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-unicorn": "^44.0.2",
-    "happy-dom": "^7.6.7",
     "npm-run-all": "^4.1.5",
     "pathe": "^0.3.9",
     "prettier": "^2.7.1",
@@ -69,6 +68,7 @@
   "dependencies": {
     "@yankeeinlondon/happy-wrapper": "^2.7.2",
     "inferred-types": "^0.31.0",
+    "happy-dom": "^7.6.7",
     "node-fetch": "^3.2.10"
   }
 }
