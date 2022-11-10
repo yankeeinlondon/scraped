@@ -6,7 +6,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.42.1
   '@typescript-eslint/parser': ^5.42.1
   '@vitest/ui': ^0.25.1
-  '@yankeeinlondon/happy-wrapper': ^2.7.1
+  '@yankeeinlondon/happy-wrapper': ^2.7.2
   bumpp: ^8.2.1
   eslint: ^8.27.0
   eslint-config-prettier: ^8.5.0
@@ -26,7 +26,7 @@ specifiers:
   vitest: ^0.25.1
 
 dependencies:
-  '@yankeeinlondon/happy-wrapper': 2.7.1_c6i55f4zfxzk73yp32iagqsyta
+  '@yankeeinlondon/happy-wrapper': 2.7.2_@vitest+ui@0.25.1
   inferred-types: 0.31.0_c6i55f4zfxzk73yp32iagqsyta
   node-fetch: 3.2.10
 
@@ -346,11 +346,10 @@ packages:
     dependencies:
       sirv: 2.0.2
 
-  /@yankeeinlondon/happy-wrapper/2.7.1_c6i55f4zfxzk73yp32iagqsyta:
-    resolution: {integrity: sha512-aYluWXsdoTut695vFfgWAQIcjwfx8c7Wu00Z0OyDaURAfVRuLj0JAuHXZJd6gpCeLV6kcJQdt5nh0eaNWfIogw==}
-    peerDependencies:
-      happy-dom: ^7.6.0
+  /@yankeeinlondon/happy-wrapper/2.7.2_@vitest+ui@0.25.1:
+    resolution: {integrity: sha512-IPk3hArZKq5toqD+8Lrr6dW2aYbjunTztiGKHWuaRO45ERD6kMvfxUdItjCI3CMlpxwLhrIRnRqcFXOv3D1cBQ==}
     dependencies:
+      fp-ts: 2.13.1
       happy-dom: 7.6.7
       native-dash: 1.23.2_c6i55f4zfxzk73yp32iagqsyta
     transitivePeerDependencies:
@@ -358,6 +357,7 @@ packages:
       - '@vitest/browser'
       - '@vitest/ui'
       - c8
+      - encoding
       - jsdom
       - less
       - sass
@@ -1388,6 +1388,10 @@ packages:
     engines: {node: '>=12.20.0'}
     dependencies:
       fetch-blob: 3.2.0
+    dev: false
+
+  /fp-ts/2.13.1:
+    resolution: {integrity: sha512-0eu5ULPS2c/jsa1lGFneEFFEdTbembJv8e4QKXeVJ3lm/5hyve06dlKZrpxmMwJt6rYen7sxmHHK2CLaXvWuWQ==}
     dev: false
 
   /fs.realpath/1.0.0:
