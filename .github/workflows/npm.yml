@@ -1,0 +1,82 @@
+name: NPM Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: choose the NPM version you want to release
+        required: true
+      npm_token:
+        description: add your NPM_TOKEN which has "publish" permissions
+        required: true
+
+  workflow_call:
+    inputs:
+      nodeVersion:
+        type: number
+        default: 16
+        required: false
+      private:
+        type: boolean
+        default: false
+        required: false
+
+    secrets:
+      npm_token:
+        required: true
+
+jobs:
+  ready:
+    env:
+      HAS_TOKEN: ${{ github.events.inputs.input.npm_token }} != '' }} || ${{ secrets.npm_token != '' }}
+      TOKEN_FROM_INPUT: ${{ github.events.inputs.input.npm_token }} != '' }}
+      TOKEN_FROM_SECRET: ${{ secrets.npm_token != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Not Authorized
+        if: ${{ env.HAS_TOKEN == 'false' }}
+        run: |
+          echo "::notice:: attempt to publish to NPM failed because NPM_TOKEN was not provided as a secret!"
+      - name: Cancel
+        if: ${{ env.HAS_TOKEN == 'false' }}
+        uses: andymckay/cancel-action@0.2
+      - name: Token identified
+        if: ${{ env.TOKEN_FROM_INPUT == 'true' }}
+        run: |
+          echo "::notice:: an NPM_TOKEN was manually via workflow_dispatch so start publishing process"
+      - name: Token identified
+        if: ${{ env.TOKEN_FROM_SECRET == 'true' }}
+        run: |
+          echo "::notice:: an NPM_TOKEN was provided via a Github secret so start publishing process"
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: ready
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.nodeVersion }}
+          registry-url: https://registry.npmjs.org/
+      - name: Install pnpm
+        run: npm i -g pnpm @antfu/ni
+      - name: Clean Install
+        run: pnpm install
+      - name: Build
+        run: nr build
+      - name: Publish to NPM
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token || github.event.inputs.npm_token}}
+      - name: Create Changelog Entry
+        run: npx changelogithub
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Done
+        run: |
+          echo "::notice :: ${{ github.actor }} published from ${{github.ref_type}} ${{ github.ref_name }} to NPM and updated the repo's changelog entry 🚀"

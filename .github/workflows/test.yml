@@ -1,42 +1,183 @@
 name: Test
 
 on:
-  push:
-    branches:
-      - main
-      - master
+  workflow_call:
+    inputs:
+      os:
+        type: string
+        default: '["ubuntu-latest", "windows-latest", "macos-latest"]'
+        required: false
+      nodeVersions:
+        type: string
+        default: '["14.x", "16.x"]'
+        required: false
+      failFast:
+        type: boolean
+        default: false
+        required: false
+      metrics:
+        type: boolean
+        default: false
+        required: false
+      metricsCommand:
+        type: string
+        default: "pnpm test:metrics"
+        required: false
+      api_token:
+        type: string
+        description: "allows an API token to be passed to testing as API_TOKEN and VITE_API_TOKEN"
+        default: ""
+        required: false
+      gh_token:
+        description: "allows a Github personal access token to be passed to testing as GH_TOKEN and VITE_GH_TOKEN"
+        type: string
+        default: ""
+        required: false
+      bitbucket_token:
+        type: string
+        default: ""
+        required: false
+      gitlab_token:
+        type: string
+        default: ""
+        required: false
 
-  pull_request:
-    branches:
-      - main
-      - master
+    secrets:
+      gh_token:
+        required: false
+      bitbucket_token:
+        required: false
+      gitlab_token:
+        required: false
+      api_token:
+        required: false
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
+  metrics:
+    name: metrics
+    runs-on: ubuntu-latest
+    if: ${{ inputs.metrics }}
 
+    steps:
+      - name: Github Token
+        if: ${{ env.GH_TOKEN != '' }}
+        run: |
+          echo "::notice:: GH_TOKEN and VITE_GH_TOKEN env variables are available for testing."
+      - name: API Token
+        if: ${{ env.API_TOKEN != '' }}
+        run: |
+          echo "::notice:: API_TOKEN and VITE_API_TOKEN env variables are available for testing."
+      - name: Bitbucket Token
+        if: ${{ env.BITBUCKET_TOKEN != '' }}
+        run: |
+          echo "::notice:: BITBUCKET_TOKEN and VITE_BITBUCKET_TOKEN env variables are available for testing."
+      - name: Gitlab Token
+        if: ${{ env.GITLAB_TOKENs != '' }}
+        run: |
+          echo "::notice:: GITLAB_TOKENs and VITE_GITLAB_TOKENs env variables are available for testing."
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+      - name: Setup
+        run: npm i -g pnpm @antfu/ni
+      - name: Install
+        run: pnpm install
+      - name: Build
+        run: nr build
+      - name: Test
+        id: test
+        run: |
+          ::set-output name=results::`${{ inputs.metricsCommand }}`
+      - name: Results
+        env:
+          TST: fromJSON(steps.test.results)
+        run: |
+          echo "::notice :: $TST.numTotalTests tests, $TST.numPassedTests passed, $TST.numFailedTests [ $TST.numTodoTests todos, $TST.numPendingTests  pending ]"
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Info
+        run: |
+          echo "::group::Info"
+          echo "Commit Msg: '${{github.event.head_commit.message}}'"
+          echo "Actor: ${{github.actor}}"
+          echo "Event Name: ${{github.event_name}}"
+          echo "Event Path: ${{github.event_path}}"
+          echo "HEAD Ref: ${{github.head_ref}}"
+          echo "Ref Name: ${{github.ref_name}}"
+          echo "Ref Type: ${{github.ref_type}}"
+          echo "Workflow: ${{github.workflow}}"
+          echo "Workspace: ${{github.workspace}}"
+          echo "Action: ${{github.action}}"
+          echo "Action Path: ${{github.action_path}}"
+          echo "Action Ref: ${{github.action_ref}}"
+          echo "Action Status: ${{github.action_status}}"
+          echo "Repo: ${{github.action_repository}}"
+          echo "Base Ref: ${{github.base_ref}}"
+          echo "ENV: ${{ toJSON(env) }}"
+          echo "Job: ${{ toJSON(job) }}"
+          echo "Steps: ${{ toJSON(steps) }}"
+          echo "Runner: ${{ toJSON(runner) }}"
+          echo "::endgroup::"
+          echo "::notice:: ${{github.actor}} has triggered CI"
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Setup
+        run: npm i -g pnpm @antfu/ni
+      - name: Clean Install
+        run: nci
+      - name: Lint
+        run: nr lint --if-present
+      - name: Cancel Workflow
+        if: failure()
+        uses: andymckay/cancel-action@0.2
+
+  test:
+    name: test
+    runs-on: ${{ matrix.os }}
+    env:
+      VITE_GH_TOKEN: ${{ secrets.gh_token }}
+      GH_TOKEN: ${{ secrets.gh_token }}
+      VITE_BITBUCKET_TOKEN: ${{ secrets.bitbucket_token }}
+      BITBUCKET_TOKEN: ${{ secrets.bitbucket_token }}
+      VITE_GITLAB_TOKEN: ${{ secrets.gitlab_token }}
+      GITLAB_TOKEN: ${{ secrets.gitlab_token }}
+      API_TOKEN: ${{ secrets.api_token }}
+      VITE_API_TOKEN: ${{ secrets.api_token }}
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: ${{ fromJSON(inputs.nodeVersions) }}
+        os: ${{ fromJSON(inputs.os) }}
+      # fail-fast: ${{ inputs.failFast }}
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
-
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
       - name: Setup
         run: npm i -g pnpm @antfu/ni
-
       - name: Install
-        run: nci
-
+        run: pnpm install
       - name: Build
         run: nr build
-
       - name: Test
-        run: nr test --if-present
+        run: pnpm test
+
+  complete:
+    name: complete
+    runs-on: ubuntu-latest
+    needs:
+      - test
+      - lint
+
+    steps:
+      - name: Success
+        run: |
+          echo ":rocket: tests run successfully"
+          echo "::notice status=success::Tests and Linting completed successfully. The changes in this commit versus last can be found at: ${{ github.event.compare }}"
