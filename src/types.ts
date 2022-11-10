@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import {  IElement } from "@yankeeinlondon/happy-wrapper";
 import { ExpandRecursively, IsStringLiteral, SimplifyObject } from "inferred-types";
 

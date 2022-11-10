@@ -1,4 +1,4 @@
-import { IElement, select } from "@yankeeinlondon/happy-wrapper";
+import {  select } from "@yankeeinlondon/happy-wrapper";
 import {  Keys, keys } from "inferred-types";
 import {  FromSelectors, QuerySelector, ScrapedNameAndUrl, ScrapedPage,  ScrapeOptions,  Url } from "src/types";
 import { loadPage } from "src/loadPage";

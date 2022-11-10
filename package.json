@@ -18,6 +18,11 @@
     "build": "tsup src/index.ts --format=esm,cjs --clean",
     "test": "vitest",
     "test:ci": "vitest run",
+    "release": "bumpp",
+    "lint": "run-p lint:*",
+    "lint:src": "eslint src/**/*.ts --fix",
+    "lint:test": "eslint test/**/*.ts --fix",
+    "lint:tsc": "tsc --noEmit",
     "watch": "run-p watch:*",
     "watch:test": "vitest watch",
     "watch:tsup": "tsup src/index.ts --format=esm,cjs --dts --watch"
