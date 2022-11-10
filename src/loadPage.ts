@@ -9,7 +9,7 @@ import { Url } from "./types";
 export async function loadPage(url: Url): Promise<HappyDoc> {
   const res = await fetch(url);
   if (res.ok) {
-    const html = createDocument(await res.text());
+    const html = createDocument(await res.text()) as HappyDoc;
     return html;
   } else {
     throw new Error(
