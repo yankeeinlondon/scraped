@@ -66,8 +66,7 @@
     "vitest": "^0.25.1"
   },
   "dependencies": {
-    "@yankeeinlondon/happy-wrapper": "^2.7.4",
-    "happy-dom": "^7.6.7",
+    "@yankeeinlondon/happy-wrapper": "^2.8.0",
     "inferred-types": "^0.31.0",
     "node-fetch": "^3.2.10"
   }
