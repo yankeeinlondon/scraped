@@ -50,7 +50,6 @@
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "@vitest/ui": "^0.25.1",
-    "@yankeeinlondon/happy-wrapper": "^2.8.0",
     "bumpp": "^8.2.1",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
@@ -67,10 +66,13 @@
     "vitest": "^0.25.1"
   },
   "peerDependencies": {
-    "@yankeeinlondon/happy-wrapper": "^2.8.0"
+    "@yankeeinlondon/happy-wrapper": "^2.8.0",
+    "happy-dom": "^7.6.7"
   },
   "dependencies": {
+    "@yankeeinlondon/happy-wrapper": "^2.8.0",
+    "happy-dom": "^7.6.7",
     "inferred-types": "^0.31.0",
-    "node-fetch": "^3.2.10"
+    "node-fetch": "^3.3.0"
   }
 }
