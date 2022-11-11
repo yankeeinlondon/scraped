@@ -70,8 +70,6 @@
     "happy-dom": "^7.6.7"
   },
   "dependencies": {
-    "@yankeeinlondon/happy-wrapper": "^2.8.0",
-    "happy-dom": "^7.6.7",
     "inferred-types": "^0.31.0",
     "node-fetch": "^3.3.0"
   }
