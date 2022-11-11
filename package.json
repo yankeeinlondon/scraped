@@ -49,7 +49,6 @@
     "@types/node": "^14.18.33",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
-    "@vitest/ui": "^0.25.1",
     "bumpp": "^8.2.1",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",

@@ -5,7 +5,6 @@ specifiers:
   '@types/node': ^14.18.33
   '@typescript-eslint/eslint-plugin': ^5.42.1
   '@typescript-eslint/parser': ^5.42.1
-  '@vitest/ui': ^0.25.1
   '@yankeeinlondon/happy-wrapper': ^2.8.0
   bumpp: ^8.2.1
   eslint: ^8.27.0
@@ -26,9 +25,9 @@ specifiers:
   vitest: ^0.25.1
 
 dependencies:
-  '@yankeeinlondon/happy-wrapper': 2.8.0_@vitest+ui@0.25.1
+  '@yankeeinlondon/happy-wrapper': 2.8.0
   happy-dom: 7.6.7
-  inferred-types: 0.31.0_c6i55f4zfxzk73yp32iagqsyta
+  inferred-types: 0.31.0_happy-dom@7.6.7
   node-fetch: 3.3.0
 
 devDependencies:
@@ -36,7 +35,6 @@ devDependencies:
   '@types/node': 14.18.33
   '@typescript-eslint/eslint-plugin': 5.42.1_2udltptbznfmezdozpdoa2aemq
   '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
-  '@vitest/ui': 0.25.1
   bumpp: 8.2.1
   eslint: 8.27.0
   eslint-config-prettier: 8.5.0_eslint@8.27.0
@@ -50,7 +48,7 @@ devDependencies:
   tsup: 6.4.0_typescript@4.8.4
   typescript: 4.8.4
   vite: 3.2.3_@types+node@14.18.33
-  vitest: 0.25.1_c6i55f4zfxzk73yp32iagqsyta
+  vitest: 0.25.1_happy-dom@7.6.7
 
 packages:
 
@@ -158,9 +156,6 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
     dev: true
-
-  /@polka/url/1.0.0-next.21:
-    resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
 
   /@type-challenges/utils/0.1.1:
     resolution: {integrity: sha512-A7ljYfBM+FLw+NDyuYvGBJiCEV9c0lPWEAdzfOAkb3JFqfLl0Iv/WhWMMARHiRKlmmiD1g8gz/507yVvHdQUYA==}
@@ -341,17 +336,12 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@vitest/ui/0.25.1:
-    resolution: {integrity: sha512-VjzyfLjNS5Zc7XCCFJW3cM2iVW305D65NG0PIWefA4A8mwOH/QJJ4nFj/4cwXzwL0/VT3/ppvpv3UDNZoh/YOQ==}
-    dependencies:
-      sirv: 2.0.2
-
-  /@yankeeinlondon/happy-wrapper/2.8.0_@vitest+ui@0.25.1:
+  /@yankeeinlondon/happy-wrapper/2.8.0:
     resolution: {integrity: sha512-p7Xj6Hwnuo2XahikUd2oDno84i1dndkiR3emLeRm7Ei2KegE8X9vS3eg/AT4I8kRX0nPkA2yPjkry/Co+3X0xw==}
     dependencies:
       fp-ts: 2.13.1
       happy-dom: 7.6.7
-      native-dash: 1.23.2_c6i55f4zfxzk73yp32iagqsyta
+      native-dash: 1.23.2_happy-dom@7.6.7
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -488,14 +478,14 @@ packages:
       fill-range: 7.0.1
     dev: true
 
-  /brilliant-errors/0.6.0_c6i55f4zfxzk73yp32iagqsyta:
+  /brilliant-errors/0.6.0_happy-dom@7.6.7:
     resolution: {integrity: sha512-4+Va/hdXk7tROAmnZ8Vp9D23oOMg6IBJAiZdhRCufMApH0NIFLsvtTb7sL8YuV6gWdLsiXxzR834bh05lC8r8Q==}
     engines: {node: '>=12.0.0'}
     dependencies:
       callsites: 3.1.0
       common-types: 1.31.1
-      inferred-types: 0.22.8_c6i55f4zfxzk73yp32iagqsyta
-      vitest: 0.19.1_c6i55f4zfxzk73yp32iagqsyta
+      inferred-types: 0.22.8_happy-dom@7.6.7
+      vitest: 0.19.1_happy-dom@7.6.7
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -1618,10 +1608,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /inferred-types/0.22.8_c6i55f4zfxzk73yp32iagqsyta:
+  /inferred-types/0.22.8_happy-dom@7.6.7:
     resolution: {integrity: sha512-gs0zTE04eOBso5tFZPA2UoYiH9qMCqCJCUdH9K6P6cofqNkI1L5bx9QDE0XE0khJgLN7TmH+W0JhwBbnkdjzWQ==}
     dependencies:
-      brilliant-errors: 0.6.0_c6i55f4zfxzk73yp32iagqsyta
+      brilliant-errors: 0.6.0_happy-dom@7.6.7
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -1637,10 +1627,10 @@ packages:
       - terser
     dev: false
 
-  /inferred-types/0.31.0_c6i55f4zfxzk73yp32iagqsyta:
+  /inferred-types/0.31.0_happy-dom@7.6.7:
     resolution: {integrity: sha512-CZQNmy0AkEBkRUYSB66cQKQ7s2TrJd+Tt07tM/HVb8uaALUQhW8KXW3TjdRh49xDFaXpTQSHwHYb4PWHVSd6ig==}
     dependencies:
-      brilliant-errors: 0.6.0_c6i55f4zfxzk73yp32iagqsyta
+      brilliant-errors: 0.6.0_happy-dom@7.6.7
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -1983,10 +1973,6 @@ packages:
     resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
     dev: true
 
-  /mrmime/1.0.1:
-    resolution: {integrity: sha512-hzzEagAgDyoU1Q6yg5uI+AorQgdvMCur3FcKf7NhMKWsaYg+RnbTyHRa/9IlLF9rf455MOCtcqqrQQ83pPP7Uw==}
-    engines: {node: '>=10'}
-
   /ms/2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
     dev: true
@@ -2011,11 +1997,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  /native-dash/1.23.2_c6i55f4zfxzk73yp32iagqsyta:
+  /native-dash/1.23.2_happy-dom@7.6.7:
     resolution: {integrity: sha512-Ev5OPB5vDZ+HLj4MXfAwZRHJV/LJr2LHjsIr1UN7jZigMS2JRpF7Qy77t66GURhtzp7GSWLNSLeRwXOg1iwJkQ==}
     dependencies:
-      brilliant-errors: 0.6.0_c6i55f4zfxzk73yp32iagqsyta
-      inferred-types: 0.22.8_c6i55f4zfxzk73yp32iagqsyta
+      brilliant-errors: 0.6.0_happy-dom@7.6.7
+      inferred-types: 0.22.8_happy-dom@7.6.7
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -2555,14 +2541,6 @@ packages:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
     dev: true
 
-  /sirv/2.0.2:
-    resolution: {integrity: sha512-4Qog6aE29nIjAOKe/wowFTxOdmbEZKb+3tsLljaBRzJwtqto0BChD2zzH0LhgCSXiI+V7X+Y45v14wBZQ1TK3w==}
-    engines: {node: '>= 10'}
-    dependencies:
-      '@polka/url': 1.0.0-next.21
-      mrmime: 1.0.1
-      totalist: 3.0.0
-
   /sisteransi/1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
     dev: true
@@ -2782,10 +2760,6 @@ packages:
       is-number: 7.0.0
     dev: true
 
-  /totalist/3.0.0:
-    resolution: {integrity: sha512-eM+pCBxXO/njtF7vdFsHuqb+ElbxqtI4r5EAvk6grfAFyJ6IvWlSkfZ5T9ozC6xWw3Fj1fGoSmrl0gUs46JVIw==}
-    engines: {node: '>=6'}
-
   /tr46/0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
@@ -2956,7 +2930,7 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
 
-  /vitest/0.19.1_c6i55f4zfxzk73yp32iagqsyta:
+  /vitest/0.19.1_happy-dom@7.6.7:
     resolution: {integrity: sha512-E/ZXpFMUahn731wzhMBNzWRp4mGgiZFT0xdHa32cbNO0CSaHpE9hTfteEU247Gi2Dula8uXo5vvrNB6dtszmQA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
@@ -2984,7 +2958,6 @@ packages:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
       '@types/node': 14.18.33
-      '@vitest/ui': 0.25.1
       chai: 4.3.7
       debug: 4.3.4
       happy-dom: 7.6.7
@@ -3001,7 +2974,7 @@ packages:
       - terser
     dev: false
 
-  /vitest/0.25.1_c6i55f4zfxzk73yp32iagqsyta:
+  /vitest/0.25.1_happy-dom@7.6.7:
     resolution: {integrity: sha512-eH74h6MkuEgsqR4mAQZeMK9O0PROiKY+i+1GMz/fBi5A3L2ml5U7JQs7LfPU7+uWUziZyLHagl+rkyfR8SLhlA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
@@ -3026,7 +2999,6 @@ packages:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
       '@types/node': 14.18.33
-      '@vitest/ui': 0.25.1
       acorn: 8.8.1
       acorn-walk: 8.2.0
       chai: 4.3.7

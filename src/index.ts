@@ -1,4 +1,5 @@
-export { HappyDoc, select, IElement } from "@yankeeinlondon/happy-wrapper";
+export { select } from "@yankeeinlondon/happy-wrapper";
+export type { HappyDoc, IElement } from "@yankeeinlondon/happy-wrapper";
 
 export * from "./loadPage";
 export * from "./scrape";
