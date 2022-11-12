@@ -1,5 +1,5 @@
 import { refine } from "src/refine";
-import {  ifUndefined, Narrowable } from "inferred-types";
+import { ifUndefined, Narrowable } from "inferred-types";
 import { QueryFirst, QueryAll, QuerySome, RefinedQuery } from "../types";
 
 /**

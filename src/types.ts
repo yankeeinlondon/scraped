@@ -99,7 +99,7 @@ export interface ScrapeOptions<
 
 export interface PageOptions<
   TUrl extends Url = never,
-  TSecondary extends SecondaryQueries<Record<string, QuerySelector>> | undefined = undefined
+  TSecondary extends SecondaryQueries<Record<string, QuerySelector<any>>> | undefined = undefined
 > {
   defaultUrl?: TUrl;
   /**

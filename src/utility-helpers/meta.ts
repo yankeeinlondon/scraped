@@ -169,7 +169,7 @@ export const meta = (_options?: MetaOptions): RefinedQueryRoot<MetaProps> => {
 
       const apple: AppleApp = removeUndefinedProps({
         apple_itunes_app: nameValueOther(meta, ["name", "apple-itunes-app"], "content"),
-        apple_mobile_web_app_capable: nameValueOther(meta, ["name", "apple-mobile-web-app-capable"], "content"),
+        apple_mobile_web_app_capable: nameValueOther<"yes" | "no">(meta, ["name", "apple-mobile-web-app-capable"], "content"),
         apple_mobile_web_app_status_bar_style: nameValueOther(meta, ["name", "apple-mobile-web-app-status-bar-style"], "content"),
         apple_mobile_web_app_title: nameValueOther(meta, ["name", "apple-mobile-web-app-title"], "content"),
         apple_touch_icon: hrefAndAttrs(links.find(el => el.getAttribute("rel") === "apple-touch-icon")),

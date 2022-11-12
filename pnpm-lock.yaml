@@ -14,7 +14,7 @@ specifiers:
   eslint-plugin-promise: ^6.1.1
   eslint-plugin-unicorn: ^44.0.2
   happy-dom: ^7.7.0
-  inferred-types: ^0.32.1
+  inferred-types: ^0.33.0
   node-fetch: ^3.3.0
   npm-run-all: ^4.1.5
   pathe: ^0.3.9
@@ -27,7 +27,7 @@ specifiers:
 dependencies:
   '@yankeeinlondon/happy-wrapper': 2.8.0
   happy-dom: 7.7.0
-  inferred-types: 0.32.1_happy-dom@7.7.0
+  inferred-types: 0.33.0_happy-dom@7.7.0
   node-fetch: 3.3.0
 
 devDependencies:
@@ -1627,8 +1627,8 @@ packages:
       - terser
     dev: false
 
-  /inferred-types/0.32.1_happy-dom@7.7.0:
-    resolution: {integrity: sha512-F0IavKlgGHx1UJLF6Wvbs4ZAkXKUX8e05YlnQFFbNZ67bDFl5mrNiabta8l0lMSnB8aipzW3TjzhSbPYaHL5/A==}
+  /inferred-types/0.33.0_happy-dom@7.7.0:
+    resolution: {integrity: sha512-d7AxnayqURSaZvmGwpU+IKmP8Hql+lCnj8wTCuOVNn4fVlaoIzaTUUSpmOPVbVhxulJN5hb/23g8a3GZx5eQpA==}
     dependencies:
       brilliant-errors: 0.6.0_happy-dom@7.7.0
     transitivePeerDependencies:

@@ -1,6 +1,5 @@
-import { Narrowable } from "inferred-types";
 import { scrape } from "./scrape";
-import { Page, PageOptions, QueryFirst, QuerySelector, ScrapedPage, Url } from "./types";
+import { Page, PageOptions,  QuerySelector, ScrapedPage, Url } from "./types";
 
 /**
  * **page(** name, selectors, options **)**
