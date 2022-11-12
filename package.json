@@ -1,6 +1,6 @@
 {
   "name": "scraped",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Scrape web content via an intuitive and strongly typed TS interface",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
