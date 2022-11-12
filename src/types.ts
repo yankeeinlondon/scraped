@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import {  IElement } from "@yankeeinlondon/happy-wrapper";
-import { IsStringLiteral, SimplifyObject } from "inferred-types";
+import { IsStringLiteral,  SimplifyObject } from "inferred-types";
 
 export type Url = `http${string}`;
 
@@ -23,7 +23,9 @@ export interface QuerySome {
   where: (i: IElement) => boolean;
 }
 
-export interface RefinedQueryFirst {
+export type RefinedQuery<R> = (el: IElement) => R;
+
+export interface RefinedQueryFirst<R = unknown>{
   first: string;
   /**
   * Since when you are looking for a singular value with a query, you 
@@ -33,16 +35,16 @@ export interface RefinedQueryFirst {
   * specify a default value with a callback function.) 
   */
   handleNull?: "undefined-value" | "null-value" | (<T>() => T);
-  refine: <T>(el: IElement) => T;
+  refine: RefinedQuery<R>;
 }
-export interface RefinedQueryAll {
+export interface RefinedQueryAll<R = unknown> {
   all: string;
-  refine: <T>(el: IElement) => T;
+  refine: RefinedQuery<R>;
 }
-export interface RefinedQuerySome {
+export interface RefinedQuerySome<R = unknown> {
   some: string;
   where: (i: IElement) => boolean;
-  refine: <T>(el: IElement) => T;
+  refine: RefinedQuery<R>;
 }
 
 export type QuerySelector = QueryAll | QueryFirst | RefinedQueryFirst | RefinedQueryAll | QuerySome | RefinedQuerySome;
@@ -143,3 +145,106 @@ export interface Page<
   defaultUrl: IsStringLiteral<TDefaultUrl> extends true ? TDefaultUrl : never;
 };
 
+export type Refine<T extends QueryAll | QueryFirst | QuerySome, R> = T extends QueryAll 
+? RefinedQueryAll<R>
+: T extends QueryFirst
+  ? RefinedQueryFirst<R>
+  : T extends QuerySome
+    ? RefinedQuerySome<R>
+    : never;
+
+export interface CommonAttributes {
+  src?: string;
+  href?: string;
+  rel?: string;
+  name?: string;
+  property?: string;
+  class?: string;
+  style?: string;
+  content?: string;
+  crossorigin?: string;
+  [key: string]: string | undefined;
+}
+
+export interface CommonMetaAttrs {
+  rel?: string;
+  href?: string;
+  name?: string;
+  content?: string;
+  property?: string;
+  crossorigin?: string;
+  [key: string]: string | undefined;
+}
+
+export interface OpenGraph {
+  title?: string;
+  description?: string;
+  site_name?: string;
+  url?: string;
+  type?: string;
+  image?: string;
+  image_alt?: string;
+  image_height?: string;
+  image_width?: string;
+}
+
+export interface TwitterMeta {
+  title?: string;
+  description?: string;
+  site?: string;
+  card?: string;
+  image?: string;
+  image_alt?: string;
+}
+
+/**
+ * A property which features an href but where other props might be of interest
+ */
+ export interface HrefAndAttrs {
+  href: string;
+  attrs: Omit<CommonAttributes, "href">;
+}
+
+export interface NameValueOther<V extends string = string> {
+  /** the properties used for the "name" and "value" */
+  props: [name: string, value: string];
+  /** The property name */
+  name: string;
+  /** the property value */
+  value: V;
+  /**
+   * Any other properties set on the meta-tag
+   */
+  other: Record<string, string>;
+}
+
+/**
+ * Pages which want to be Microsoft Apps sometimes provide meta
+ * tags with `name` set to the dasherized version of these props
+ * and the _value_ provided in the `content` property.
+ */
+ export interface MicrosoftApp {
+  msapplication_square70x70logo?: NameValueOther;
+  msapplication_square150x150logo?: NameValueOther;
+  msapplication_wide310x150logo?: NameValueOther;
+  msapplication_square310x310logo?: NameValueOther;
+  msapplication_TileColor?: NameValueOther;
+}
+
+export interface AppleApp {
+  apple_itunes_app?: NameValueOther;
+  apple_mobile_web_app_capable?: NameValueOther<"yes" | "no">;
+  apple_mobile_web_app_status_bar_style?: NameValueOther;
+  apple_mobile_web_app_title?: NameValueOther;
+  apple_touch_icon?: HrefAndAttrs;
+
+}
+
+
+/**
+ * an inline block of code, styling, etc.
+ */
+ export interface InlineBlock {
+  text: string;
+  attrs: CommonAttributes;
+}

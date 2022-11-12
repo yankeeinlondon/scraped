@@ -113,3 +113,45 @@ The `select(el)` utility consumes an element and then provides a useful API surf
 - `mapAll(sel)<O>(el: IElement => O)`
 
 The entire API surface is typed and has useful doc comments to help guide you in its use.
+
+### Scrape Composition and Provided Patterns
+
+When you're defining a scraping _template_ with `page()` you have a high-level form of reuse for scraping but there are opportunities to gain reuse at the individual key/value pairing of a definition too.
+
+As an example, it may be very common for pages to have "links" on the page which you want to scrape off. Let's say that you're interested in just gaining a list of all the link URLs on the page:
+
+```ts
+const template = page("example", {
+    links: { all: "a", refine: el => el.getAttribute("href") }
+});
+```
+
+This will work and isn't all that much text to put a future page that needs the same thing but what if you not only wanted to get links, you wanted to know the classes on each, maybe you wanted to distinguish between links _within_ the site versus externally and maybe you only wanted to match the links inside one part of the page rather then the page at large. Now a reuse pattern for `links` sounds like a better idea and you can create one for yourself very easily.
+
+Reuse in this case is probably best attained at the `QuerySelector` level which in our example above is the _value_ of the `links` key. If we understand that every key/value pair in our definition of a page template has a _value_ of `QuerySelector` we can build a higher-level function to do our bidding.
+
+So long as our _helper_ function returns a `QuerySelector` like we see below:
+
+```ts
+const links: (selector: string): QuerySelector = { ... };
+```
+
+we can replace our link scraping with something like this:
+
+```ts
+const template = page("example", {
+    links: links(".main-content")
+});
+```
+
+This simple example shows the pattern and this library exports more powerful versions of the `links` helper along with several others:
+
+- `links(options)` - find links in all or part of the page, optionally provide a _filter_ function to eliminate some based on link attributes
+- `images(options)` - find all images in some or part of the page, distinguish between "self-hosted" and external
+- `h1(opt)`, `h2(opt)`, `h3(opt)`, `h4(opt)` - extract heading level text and heading attributes
+- `meta(options)` - get valuable meta data that often exists on a page including:
+  - `title` - the text in the title attribute
+  - `description` - a description of page if found in `<meta>` tag
+  - `image` - an image to represent the page if found in `<meta>` tag
+
+All provided helpers are strongly typed with good comments to help you use them in a self-documenting manner. Also, if you're wanting to create your own abstracts have a look on Github at the source for these to help you get a good starting point.
