@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
-import {  IElement } from "@yankeeinlondon/happy-wrapper";
-import { IsStringLiteral,  SimplifyObject } from "inferred-types";
+import {  Fragment,  IElement } from "@yankeeinlondon/happy-wrapper";
+import { IsStringLiteral,  Narrowable,  SimplifyObject } from "inferred-types";
 
 export type Url = `http${string}`;
 
@@ -25,6 +25,11 @@ export interface QuerySome {
 
 export type RefinedQuery<R> = (el: IElement) => R;
 
+export interface RefinedQueryRoot<R extends Narrowable = unknown>{
+  root: true;
+  doc: (doc: Fragment) => R;
+}
+
 export interface RefinedQueryFirst<R = unknown>{
   first: string;
   /**
@@ -47,21 +52,37 @@ export interface RefinedQuerySome<R = unknown> {
   refine: RefinedQuery<R>;
 }
 
-export type QuerySelector = QueryAll | QueryFirst | RefinedQueryFirst | RefinedQueryAll | QuerySome | RefinedQuerySome;
+export type QuerySelector<Q extends {}> = 
+  Q extends QueryAll
+    ? Q extends RefinedQueryAll<infer R>
+      ? RefinedQueryAll<R>
+      : QueryAll
+    : Q extends QueryFirst
+      ? Q extends RefinedQueryFirst<infer R>
+        ? RefinedQueryFirst<R>
+        : QueryFirst
+      : Q extends QuerySome
+        ? Q extends RefinedQuerySome<infer R>
+          ? RefinedQuerySome<R>
+          : QuerySome
+        : Q extends RefinedQueryRoot<infer R>
+          ? RefinedQueryRoot<R>
+          : never;
+
 
 /** converts a dictionary of Query Selectors into a signature for a secondary query */
 export type SecondaryQuery<
-  T extends Record<string, QuerySelector>
+  T extends Record<string, QuerySelector<any>>
 > = (<V>(q: FromSelectors<T>) => V);
 
 /**
  * Defines the basic dictionary structure of the secondary queries configuration. 
  */
-export type SecondaryQueries<T extends Record<string, QuerySelector>> = Record<string, SecondaryQuery<T>>;
+export type SecondaryQueries<T extends Record<string, QuerySelector<any>>> = Record<string, SecondaryQuery<T>>;
 
 export interface ScrapeOptions<
   TName extends string | undefined = undefined, 
-  TSecondary extends SecondaryQueries<Record<string, QuerySelector>> | undefined = undefined
+  TSecondary extends SecondaryQueries<Record<string, QuerySelector<any>>> | undefined = undefined
 > {
   /** 
    * The configuration template this scrape was derived from.
@@ -96,10 +117,12 @@ export type ScrapedNameAndUrl<N extends string | undefined, U extends Url = "htt
  * Type utility which converts a hashmap of selectors into a hashmap with the same keys
  * but where the _value_ is what the value of the given selector will be after scraping.
  */
- export type FromSelectors<TSelectors extends Record<string, QuerySelector>> = {
+ export type FromSelectors<TSelectors extends Record<string, QuerySelector<any>>> = {
   [K in keyof TSelectors]: TSelectors[K] extends { refine: (el: IElement) => infer R }
     ? R
-    : IElement;
+    : TSelectors[K] extends { doc: (doc: Fragment) => infer R }
+      ? R
+      : IElement;
 };
 
 /**
@@ -109,7 +132,7 @@ export type ScrapedNameAndUrl<N extends string | undefined, U extends Url = "htt
  */
 export type ScrapedPage<
   TName extends string | undefined,
-  TSelectors extends Record<string, QuerySelector>,
+  TSelectors extends Record<string, QuerySelector<any>>,
   TUrl extends Url
 > = Promise<SimplifyObject< ScrapedNameAndUrl<TName, TUrl> & FromSelectors<TSelectors> >>;
 
@@ -121,7 +144,7 @@ export type ScrapedPage<
  */
 export interface Page<
   TName extends string, 
-  TSelectors extends Record<string, QuerySelector>,
+  TSelectors extends Record<string, QuerySelector<any>>,
   TDefaultUrl extends Url,
 >  {
   /**
@@ -215,7 +238,7 @@ export interface NameValueOther<V extends string = string> {
   /**
    * Any other properties set on the meta-tag
    */
-  other: Record<string, string>;
+  attrs: Record<string, string>;
 }
 
 /**
@@ -237,7 +260,6 @@ export interface AppleApp {
   apple_mobile_web_app_status_bar_style?: NameValueOther;
   apple_mobile_web_app_title?: NameValueOther;
   apple_touch_icon?: HrefAndAttrs;
-
 }
 
 
@@ -247,4 +269,20 @@ export interface AppleApp {
  export interface InlineBlock {
   text: string;
   attrs: CommonAttributes;
+}
+
+/**
+ * A text attribute which could be sourced from more than one source
+ */
+export interface MultiSourceText<S extends string = string> {
+  source: S;
+  text: string;
+}
+
+/**
+ * A URL which could be sourced from more than one source
+ */
+export interface MultiSourceUrl<S extends string = string> {
+  source: S;
+  url: string;
 }

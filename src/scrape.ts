@@ -2,11 +2,11 @@ import {  select } from "@yankeeinlondon/happy-wrapper";
 import {  Keys, keys } from "inferred-types";
 import {  FromSelectors, QuerySelector, ScrapedNameAndUrl, ScrapedPage,  ScrapeOptions,  Url } from "src/types";
 import { loadPage } from "src/loadPage";
-import { isQueryAll, isQueryFirst, isQuerySome, isRefinedQuery } from "./type-guards";
+import { isQueryAll, isQueryFirst, isQuerySome, isRefinedQuery, isRefinedQueryRoot } from "./type-guards";
 
 export async function scrape<
   TUrl extends Url, 
-  TSelectors extends Record<string, QuerySelector>, 
+  TSelectors extends Record<string, QuerySelector<any>>, 
   TName extends string | undefined
 >(
   url: TUrl,
@@ -25,9 +25,14 @@ export async function scrape<
   } ;
 
   for (const key of keys(targets)) {
-    const target: QuerySelector = targets[key];
+    const target: QuerySelector<any> = targets[key];
 
-    if (isQueryAll(target)) {
+    if (isRefinedQueryRoot(target)) {
+      results = {
+        ...results,
+        [key]: target.doc(page)
+      };
+    } else if (isQueryAll(target)) {
       const elements = select(page).findAll(target.all);
       results = isRefinedQuery(target)
         ? { ...results, [key]: elements.map(el => target.refine(el)) }

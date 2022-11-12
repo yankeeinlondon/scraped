@@ -1,4 +1,4 @@
-import { QueryAll, QueryFirst, QuerySelector, QuerySome, RefinedQueryAll, RefinedQueryFirst, RefinedQuerySome } from "./types";
+import { QueryAll, QueryFirst, QuerySelector, QuerySome, RefinedQueryAll, RefinedQueryFirst, RefinedQueryRoot, RefinedQuerySome } from "./types";
 
 export function isQueryAll(q: QuerySelector): q is QueryAll | RefinedQueryAll {
   return "all" in q;
@@ -14,4 +14,8 @@ export function isQueryAll(q: QuerySelector): q is QueryAll | RefinedQueryAll {
 
  export function isRefinedQuery(q: QuerySelector): q is RefinedQueryAll | RefinedQueryFirst | RefinedQuerySome {
   return "refine" in q;
+ }
+
+ export function isRefinedQueryRoot(q: QuerySelector): q is RefinedQueryRoot {
+  return "root" in q && (q as RefinedQueryRoot).root === true;
  }

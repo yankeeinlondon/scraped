@@ -1,16 +1,20 @@
 import { IElement } from "@yankeeinlondon/happy-wrapper";
-import { Keys } from "inferred-types";
+import { keys, Keys, KeysWithValue } from "inferred-types";
 import { CommonAttributes, HrefAndAttrs, InlineBlock, NameValueOther } from "./types";
 
-export const getAttributesOfElement = <E extends readonly string[], A extends {[key: string]: string | undefined} = CommonAttributes>(el: IElement, ...except: E): Omit<A, Keys<E>> => {
+export const getAttributesOfElement = <
+  E extends readonly string[], 
+  A extends {[key: string]: string | undefined} = CommonAttributes
+>(el: IElement, ...except: E): Omit<A, Keys<E>> => {
+  
   return (
       el.getAttributeNames()
       .reduce((acc, key) => {
         acc = except.includes(key)
           ? acc 
           : { ...acc, [key]: el.getAttribute(key) };
+        return acc;
       }, {} as any) 
-      || {}
   ) as unknown as Omit<A, Keys<E>>;
 };
 
@@ -32,7 +36,7 @@ export function nameValueOther<V extends string = string>(els: IElement[], name:
       props: [name[0], valueProp],
       name: name[1],
       value: found.getAttribute(valueProp) as V,
-      other: getAttributesOfElement(found, name[0], valueProp)
+      attrs: getAttributesOfElement(found, name[0], valueProp)
     } as NameValueOther<V>
     : undefined;
 }
@@ -42,4 +46,16 @@ export function inlineBlock(el: IElement): InlineBlock {
     text: el.textContent,
     attrs: getAttributesOfElement(el)
   };
+}
+
+export function removeUndefinedProps<T extends {}>(dict: T) {
+  const d = {} as Record<any, any>;
+  for (const key of keys(dict)) {
+    const val = dict[key];
+    if (val !== undefined) {
+      d[key] = val;
+    }
+  }
+
+  return d as Omit<T, KeysWithValue<undefined, T>>;
 }

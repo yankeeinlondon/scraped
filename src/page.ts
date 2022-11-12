@@ -1,5 +1,6 @@
+import { Narrowable } from "inferred-types";
 import { scrape } from "./scrape";
-import { Page, PageOptions, QuerySelector, ScrapedPage, Url } from "./types";
+import { Page, PageOptions, QueryFirst, QuerySelector, ScrapedPage, Url } from "./types";
 
 /**
  * **page(** name, selectors, options **)**
@@ -18,7 +19,7 @@ import { Page, PageOptions, QuerySelector, ScrapedPage, Url } from "./types";
  */
 export const page = <
   N extends string, 
-  C extends Record<string, QuerySelector>, 
+  C extends Record<string, QuerySelector<any>>, 
   U extends Url
 >(
   name: N, 
