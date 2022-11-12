@@ -155,3 +155,30 @@ This simple example shows the pattern and this library exports more powerful ver
   - `image` - an image to represent the page if found in `<meta>` tag
 
 All provided helpers are strongly typed with good comments to help you use them in a self-documenting manner. Also, if you're wanting to create your own abstracts have a look on Github at the source for these to help you get a good starting point.
+
+### Secondary Queries
+
+When you've scraped a page, you'll often have information now which leads you to want to scrape additional documents. The _secondary queries_ feature is intended to help you with this.
+
+As a "for example", imagine we want to scrape the first page using our "home" template but then any internal links it finds in the "top stories" section, we want to to scrape with the "stories" template:
+
+```ts
+import { page, links } from "scraped";
+
+const stories = page("stories", { ... });
+const home = page(
+    "home", 
+    {
+        links: links({selector: ".top-stories", filter: (ctx) => ctx.kind === "internal" })
+    },
+    {
+        secondaryQueries: h => {
+            stories: await h.links
+                .map(l => l.href)
+                .map(href => stories.scrape(href))
+        }
+    }
+);
+```
+
+As soon as the home page is scraped it will pass the _initial_ scrape results -- as `h` above -- to help you build the `stories` property as a _secondary_ query.
