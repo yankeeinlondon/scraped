@@ -5,3 +5,4 @@ export * from "./loadPage";
 export * from "./scrape";
 export * from "./page";
 export * from "./types";
+export * from "./utility-helpers/index";
