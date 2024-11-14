@@ -82,8 +82,8 @@ export const links = <
 
   return ifString(
     options?.selector as T,
-    refine(
-      { first: o.selector as string }, 
+    i => refine(
+      { first: i }, 
       el => select(el)
         .findAll("img")
         .filter(h => o.filter(elementToMeta(h)))

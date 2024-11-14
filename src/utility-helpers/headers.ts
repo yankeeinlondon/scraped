@@ -1,4 +1,4 @@
-import { IElement } from "happy-dom";
+import { IElement } from "@yankeeinlondon/happy-wrapper";
 import { ifString } from "inferred-types";
 import { refine } from "src/refine";
 import { select } from "..";
@@ -60,7 +60,7 @@ function elementToMeta(el: IElement): HeadingMeta {
 
   return ifString(
     o.selector,
-    refine({ first: o.selector as string }, el => select(el)
+    sel => refine({ first: sel }, el => select(el)
         .findAll("h1")
         .filter(h => o.filter(elementToMeta(h)))
         .map(elementToMeta)
@@ -90,7 +90,7 @@ function elementToMeta(el: IElement): HeadingMeta {
 
   return ifString(
     o.selector,
-    refine({ first: o.selector as string }, el => select(el)
+    sel => refine({ first: sel }, el => select(el)
         .findAll("h2")
         .filter(h => o.filter(elementToMeta(h)))
         .map(elementToMeta)
@@ -119,7 +119,7 @@ function elementToMeta(el: IElement): HeadingMeta {
 
   return ifString(
     o.selector,
-    refine({ first: o.selector as string }, el => select(el)
+    sel => refine({ first: sel }, el => select(el)
         .findAll("h3")
         .filter(h => o.filter(elementToMeta(h)))
         .map(elementToMeta)
@@ -148,7 +148,7 @@ function elementToMeta(el: IElement): HeadingMeta {
 
   return ifString(
     o.selector,
-    refine({ first: o.selector as string }, el => select(el)
+    sel => refine({ first: sel }, el => select(el)
         .findAll("h4")
         .filter(h => o.filter(elementToMeta(h)))
         .map(elementToMeta)

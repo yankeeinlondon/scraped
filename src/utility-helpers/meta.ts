@@ -1,6 +1,6 @@
 import { select } from "@yankeeinlondon/happy-wrapper";
 import { getAttributesOfElement, hrefAndAttrs, inlineBlock, nameValueOther, removeUndefinedProps } from "src/utils";
-import { AppleApp, HrefAndAttrs, InlineBlock, MicrosoftApp, MultiSourceText, MultiSourceUrl, OpenGraph, RefinedQueryRoot, TwitterMeta } from "src/types";
+import { AppleApp, HrefAndAttrs, InlineBlock, MicrosoftApp, MultiSourceText as MultiSource, OpenGraph, QueryRoot, TwitterMeta, Url } from "src/types";
 
 export interface FontInfo {
   type: string;
@@ -38,12 +38,12 @@ export interface MetaProps {
   /**
    * Sources the "title" from a page from from the listed sources (in order of precedence)
    */
-  title?: MultiSourceText<"title" | "og:title" | "twitter:title" | "og:site_name">;
+  title?: MultiSource<"title" | "og:title" | "twitter:title" | "og:site_name">;
   /**
    * Retrieves the _description_ from the `<meta name="description" ...>` if available
    * but then will backfill it with `og:description` or then `twitter:description` if not found.
    */
-  description?: MultiSourceText<"description" | "og:description" | "twitter:description">;
+  description?: MultiSource<"description" | "og:description" | "twitter:description">;
   icon?: HrefAndAttrs;
   mask_icon?: HrefAndAttrs;
 
@@ -72,9 +72,9 @@ export interface MetaProps {
   /**
    * Attempts to fill in with `og:image` and `twitter:img:src`
    */
-  image?: MultiSourceUrl<"og:image" | "twitter:img:src">;
+  image?: MultiSource<"og:image" | "twitter:img:src", Url>;
   /** the "alt" description for the image (if available) */
-  image_alt?: MultiSourceText<"og:image:alt" | "twitter:img:alt">;
+  image_alt?: MultiSource<"og:image:alt" | "twitter:img:alt">;
 
   /**
    * a boolean flag which indicates whether any OG (Open Graph)
@@ -121,13 +121,9 @@ export interface MetaOptions {
   includePreConnect?: boolean;
 }
 
-export const meta = (_options?: MetaOptions): RefinedQueryRoot<MetaProps> => {
+export const meta = (_options?: MetaOptions): QueryRoot<MetaProps> => {
   return { 
-    root: true, 
-    doc: doc => {
-      const html = select(doc).findFirst("html", "Couldn't find <html></html> block!");
-      const head = select(doc).findFirst("head", "Couldn't find <head></head> section!");
-      const body = select(doc).findFirst("body", "Couldn't find <body></body> section!");
+    root:( { html, head, body }) => {
       const htmlAttrs = getAttributesOfElement(html);
       const bodyAttrs = getAttributesOfElement(body);
       const meta = select(head).findAll("meta");

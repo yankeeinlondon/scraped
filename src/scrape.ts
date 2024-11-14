@@ -1,64 +1,88 @@
-import {  select } from "@yankeeinlondon/happy-wrapper";
-import {  Keys, keys } from "inferred-types";
-import {  FromSelectors, QuerySelector, ScrapedNameAndUrl, ScrapedPage,  ScrapeOptions,  Url } from "src/types";
+import { select } from "@yankeeinlondon/happy-wrapper";
+import {  keys } from "inferred-types";
+import { PrimaryQueries, PrimaryResults, Query, QuerySelector, ResultSet,  ScrapedPage,  ScrapeOptions,    SecondaryQueryDefn,  SecondaryResults,  Url } from "src/types";
 import { loadPage } from "src/loadPage";
-import { isQueryAll, isQueryFirst, isQuerySome, isRefinedQuery, isRefinedQueryRoot } from "./type-guards";
+import { isQueryAll, isQueryFirst, isQuerySome, isRefinedQuery, isRefinedQueryRoot, isThenable } from "./type-guards";
+import { NO_TEMPLATE } from "./constants";
 
 export async function scrape<
-  TUrl extends Url, 
-  TSelectors extends Record<string, QuerySelector<any>>, 
-  TName extends string | undefined
+TUrl extends Url, 
+TPrimary extends PrimaryQueries,
+TSecondary extends SecondaryQueryDefn<TPrimary>,
+TName extends string = typeof NO_TEMPLATE,
+TResultSet extends ResultSet = "primary + secondary",
+TBaseUrl extends Url = Url
 >(
   url: TUrl,
-  targets: TSelectors,
-  options: ScrapeOptions<TName> = {}
+  targets: TPrimary,
+  options: ScrapeOptions<TName, TBaseUrl, TPrimary, TSecondary, TResultSet> = {}
 ) {
-  const page = await loadPage(url);
+  const [page, root] = await loadPage(url);
 
-  const nameAndUrl = {
-    _from: options.from || "__immediate__",
-    _url: url,
-  } as ScrapedNameAndUrl<TName, TUrl>;
+  const o = {
+    from: NO_TEMPLATE as TName,
+    baseUrl: "http" as Url,
+    resultSet: "primary + secondary",
+    secondary: {},
+    ...options
+  } as Required<ScrapeOptions<TName, TBaseUrl, TPrimary, TSecondary, TResultSet>>;
 
-  let results: Record<Keys<TSelectors>, any> = {
-    ...({} as unknown as FromSelectors<TSelectors>)
-  } ;
-
+  // primary results
+  const primaryResults: Partial<Record<keyof typeof targets, any>> = {};
   for (const key of keys(targets)) {
-    const target: QuerySelector<any> = targets[key];
+    const target: QuerySelector = targets[key];
 
     if (isRefinedQueryRoot(target)) {
-      results = {
-        ...results,
-        [key]: target.doc(page)
-      };
+      primaryResults[key] = target.root(root);
     } else if (isQueryAll(target)) {
       const elements = select(page).findAll(target.all);
-      results = isRefinedQuery(target)
-        ? { ...results, [key]: elements.map(el => target.refine(el)) }
-        : { ...results, [key]: elements };
+      primaryResults[key] = isRefinedQuery(target)
+        ? elements.map(el => target.refine(el))
+        : elements;
     } else if (isQuerySome(target)) {
       const elements = select(page).findAll(target.some).filter(i => target.where(i));
-      results = isRefinedQuery(target)
-        ? { ...results, [key]: elements.map(el => target.refine(el)) }
-        : { ...results, [key]: elements };
+      primaryResults[key] = isRefinedQuery(target)
+        ? elements.map(el => target.refine(el))
+        : elements;
     } else if (isQueryFirst(target)) {
       const el = select(page).findFirst(target.first);
-      results = el === null
+      primaryResults[key] = el === null
         ? target?.handleNull === "null-value"
-          ? { ...results, [key]: null }
+          ? null
           : target?.handleNull === "undefined-value" || target?.handleNull === undefined
-            ? { ...results, [key]: undefined }
-            : { ...results, [key]: target?.handleNull() }
+            ? undefined
+            : target?.handleNull()
         : isRefinedQuery(target)
-        ? { ...results, [key]: target.refine(el) }
-        : { ...results, [key]: el };
+        ? target.refine(el)
+        : el;
     }
-
   }
 
-  return {
-    ...nameAndUrl,
-    ...results
-  } as Awaited<ScrapedPage<TName, TSelectors, TUrl>>;
+  // secondary results
+  const primary = primaryResults as PrimaryResults<TPrimary>;
+  const secondaryPromises: Promise<any>[] = [];
+  const secondary: Partial<SecondaryResults<TSecondary>> = {};
+  for (const key of keys(o.secondary)) {
+    const fn = o.secondary[key] as Query<TPrimary, any>;
+    const r = fn(primary);
+    if (isThenable(r)) {
+      r.then(v => {
+        secondary[key] = v;
+      });
+      secondaryPromises.push(r);
+    } else {
+      secondary[key] = r;
+    }
+    // let all async functions complete
+    await Promise.all(secondaryPromises);
+  }
+
+  const results = {
+    _template: o.from,
+    _url: url,
+    ...(o.resultSet === "primary + secondary" ?  primaryResults : {}),
+    ...(secondary as SecondaryResults<TSecondary>)
+  } as ScrapedPage<TName, TUrl, TPrimary, TSecondary, TResultSet, TBaseUrl>;
+
+  return results;
 }

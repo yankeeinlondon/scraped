@@ -1,0 +1,1 @@
+export const NO_TEMPLATE = "__immediate__" as const;

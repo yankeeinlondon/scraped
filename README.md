@@ -167,12 +167,15 @@ import { page, links } from "scraped";
 
 const stories = page("stories", { ... });
 const home = page(
+    // template name
     "home", 
+    // primary selectors
     {
         links: links({selector: ".top-stories", filter: (ctx) => ctx.kind === "internal" })
     },
+    // secondary queries
     {
-        secondaryQueries: h => {
+        secondary: h => {
             stories: await h.links
                 .map(l => l.href)
                 .map(href => stories.scrape(href))
@@ -181,4 +184,9 @@ const home = page(
 );
 ```
 
-As soon as the home page is scraped it will pass the _initial_ scrape results -- as `h` above -- to help you build the `stories` property as a _secondary_ query.
+As soon as the home page is scraped it will pass the _initial_ scrape results -- as `h` above -- to help you build the `stories` property as a _secondary_ query. When all secondary results are produced the dictionary of both the initial and secondary queries will be returned. Note that:
+
+1. If a secondary query takes the same name of an initial query then the secondary query's result will _override_ the value of the initial query.
+2. If you want to _only_ get back the secondary results you can set the option `onlySecondary` to **true**.
+
+As a final note -- if you haven't already detected this capability/risk -- since secondary queries can call page templates that in turn have secondary queries this allows a recursive scraping process which can be both powerful as well as dangerous if not used carefully. Enjoy the matches but keep water close.

@@ -59,9 +59,9 @@ describe("basics", () => {
       meta: meta()
     });
 
-    expect(typeof docs_rs.meta?.title?.text).toBe("string");
+    expect(typeof docs_rs.meta?.title?.value).toBe("string");
     expect(docs_rs.meta?.title?.source).toBe("title");
-    expect(docs_rs.meta?.title?.text).toBe("Docs.rs");
+    expect(docs_rs.meta?.title?.value).toBe("Docs.rs");
     // eslint-disable-next-line unicorn/text-encoding-identifier-case
     expect(docs_rs.meta?.charset).toBe("UTF-8");
     // has a nonce embedded
@@ -79,6 +79,6 @@ describe("basics", () => {
     expect(github.meta.og).toBeTruthy();
     expect(github.meta.has_og_props).toBe(true);
     expect(github.meta.icon?.href).toBeTruthy();
-    expect(github.meta.image?.url).toBeTruthy();
+    expect(github.meta.image?.value).toBeTruthy();
   });
 });

@@ -1,5 +1,6 @@
+import { pathJoin } from "inferred-types";
 import { scrape } from "./scrape";
-import { Page, PageOptions,  QuerySelector, ScrapedPage, Url } from "./types";
+import { Page, PageOptions, PrimaryQueries, QueryDefn, ResultSet, RouteSuggestions, SecondaryQueryDefn, Url } from "./types";
 
 /**
  * **page(** name, selectors, options **)**
@@ -8,7 +9,7 @@ import { Page, PageOptions,  QuerySelector, ScrapedPage, Url } from "./types";
  * scraping until later when the returned `scrape()` method is used.
  * 
  * @param name the **name** of the configuration settings
- * @param selectors the **selectors** you will look for on the page
+ * @param primaryQueries the **selectors** you will look for on the page
  * ```ts
  * const selectors: Record<string, QuerySelector> = {
  *    title: { first: "head title" }
@@ -17,31 +18,50 @@ import { Page, PageOptions,  QuerySelector, ScrapedPage, Url } from "./types";
  * @param options **options** including setting a default URL
  */
 export const page = <
-  N extends string, 
-  C extends Record<string, QuerySelector<any>>, 
-  U extends Url
+  TName extends string, 
+  TPrimary extends PrimaryQueries, 
+  TBaseUrl extends Url = Url,
+  TSecondary extends SecondaryQueryDefn<TPrimary> = {},
+  TResultSet extends ResultSet = "primary + secondary",
+  TRoutes extends readonly string[] = []
 >(
-  name: N, 
-  selectors: C, 
-  options: PageOptions<U> = {} as PageOptions<never>
-) => {
+  name: TName, 
+  primaryQueries: TPrimary, 
+  options?: PageOptions<TBaseUrl, TPrimary, TSecondary, TResultSet, TRoutes>
+) => {  
+  const o = {
+    baseUrl: "http" as Url,
+    secondaryQueries: {},
+    resultSet: "primary + secondary",
+    routes: [],
+
+    ...options
+  } as PageOptions<TBaseUrl, TPrimary, TSecondary, TResultSet>;
+
   const p = {
+    kind: "page template",
     name,
-    selectors,
-    scrape: options.defaultUrl
-      ? async <T extends Url = U>(url?: T) => {
-        // accept override URL if provided
-        const target = (url || options.defaultUrl as Url) as T;
-        const result = await scrape<T, C, N>(target, selectors) as ScrapedPage<N, C, T>;
+    primaryQueries,
+    secondaryQueries: options?.secondaryQueries,
+    scrape:  async <
+      TUrl extends TBaseUrl & RouteSuggestions<TBaseUrl, TRoutes>, 
+      TRest extends readonly string[] = []
+    >(url: TUrl, ...rest: TRest ) => {
+        const result = await scrape(
+          pathJoin(url as Url, ...rest), 
+          primaryQueries,
+          o
+        );
         
         return result;
-      }
-      : async <T extends Url>(url: T) => {
-        const result = await scrape(url, selectors) as ScrapedPage<N, C, T>;
+    }
+  } as Page<
+    TName, 
+    QueryDefn<TPrimary>, 
+    QueryDefn<TSecondary>, 
+    TBaseUrl,
+    TResultSet
+  >;
 
-        return result;
-      }
-  } as Page<N,C,U>;
-
-  return p as Page<N,C,U>;
+  return p;
 };

@@ -76,8 +76,8 @@ export const images = <
 
   return ifString(
     options?.selector as T,
-    refine(
-      { first: o.selector as string }, 
+    href => refine(
+      { first: href }, 
       el => select(el)
         .findAll("img")
         .filter(h => o.filter(elementToMeta(h)))

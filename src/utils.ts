@@ -29,6 +29,7 @@ export function hrefAndAttrs(el: IElement | undefined): HrefAndAttrs | undefined
   };
 }
 
+
 export function nameValueOther<V extends string = string>(els: IElement[], name: [prop: string, value: string], valueProp: string): NameValueOther<V> | undefined {
   const found = els.find(el => el.getAttribute(name[0]) === name[1]);
   return found
@@ -36,7 +37,7 @@ export function nameValueOther<V extends string = string>(els: IElement[], name:
       props: [name[0], valueProp],
       name: name[1],
       value: found.getAttribute(valueProp) as V,
-      attrs: getAttributesOfElement(found, name[0], valueProp)
+      attrs: getAttributesOfElement(found, name[0], valueProp),
     } as NameValueOther<V>
     : undefined;
 }
